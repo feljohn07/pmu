@@ -94,7 +94,15 @@
 
     {{-- Accomplishment Report --}}
     <x-mary-card class="mt-10">
-        <p>Accomplishment Report</p>
+
+        <div class="flex items-center justify-between w-full">
+            <p>Accomplishment Report</p>
+            <div>
+                <x-mary-button label="Add Report" />
+            </div>
+        </div>
+
+        
         <!-- Table Section -->
         <div class="overflow-x-auto mt-10">
             <table class="table w-full">
@@ -168,7 +176,13 @@
 
     <x-mary-card class="mt-10">
 
-        <p>Financial Report</p>
+        <div class="flex items-center justify-between w-full">
+            <p>Financial Report</p>
+            <div>
+                <x-mary-button label="Add Report" />
+            </div>
+        </div>
+
         <!-- Table Section -->
         <div class="overflow-x-auto mt-10">
             <table class="table w-full">
