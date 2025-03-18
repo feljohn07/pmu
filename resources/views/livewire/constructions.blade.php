@@ -3,7 +3,7 @@
     <br>
     <div class="flex flex-wrap gap-6 justify-center lg:justify-start">
         <x-chart-card chartName="" completed="10" ongoing="10" pending="10" />
-        <x-line-chart-card chartName="" approved="1" for-approval="5" no-pow="2"/>
+        <x-line-chart-card chartName="" approved="1" for-approval="5" no-pow="2" />
     </div>
 
     <x-mary-card class="mt-10">
@@ -30,7 +30,8 @@
                 <!-- Table Body -->
                 <tbody>
                     @foreach($projects as $project)
-                        <tr onclick="window.location.href='{{ route('view-constructions', ['id' => $project['code_no']]) }}'" class="cursor-pointer hover:bg-gray-100">
+                        <tr onclick="window.location.href='{{ route('view-constructions', ['id' => $project['code_no']]) }}'"
+                            class="cursor-pointer hover:bg-gray-100">
                             <td>{{ $project['code_no'] }}</td>
                             <td>{{ $project['project_name'] }}</td>
                             <td>{{ number_format($project['material_cost'], 2) }}</td>
@@ -41,10 +42,13 @@
                             <td>{{ $project['duration'] }}</td>
                             <td>{{ $project['implementation_status'] }}</td>
                             <td>{{ $project['remarks'] }}</td>
-                            <td>
+                            {{-- <td>
                                 @if($project['url'])
                                     <a href="{{ $project['url'] }}" class="text-blue-500 underline" target="_blank">View</a>
                                 @endif
+                            </td> --}}
+                            <td>
+                                <x-mary-button label="Approve"/>
                             </td>
                         </tr>
                     @endforeach
