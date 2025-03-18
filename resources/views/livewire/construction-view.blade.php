@@ -4,16 +4,14 @@
 
     <br>
     <div class="flex flex-wrap gap-6 justify-center lg:justify-start">
-        {{-- <x-chart-card chartName="" completed="10" ongoing="10" pending="10" />
-        <x-line-chart-card chartName="" approved="1" for-approval="5" no-pow="2" /> --}}
-        <x-mary-card style="width: 100%">
+        <x-mary-card class="w-full">
             <p>Monthly Report</p>
             <canvas id="weeklyAccomplishmentChart"></canvas>
         </x-mary-card>
 
-        <x-mary-card style="width: 48%">
+        <x-mary-card class="w-full md:w-1/2 lg:w-1/3">
             <p>Project Duration</p>
-            <div class="relative mt-[30px] e w-[400px] h-[200px] mx-auto">
+            <div class="relative mt-6 w-full max-w-[400px] h-[200px] mx-auto">
                 <canvas id="gaugeChart"></canvas>
                 <div class="absolute top-[150px] left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
                     <p class="text-lg font-semibold text-gray-700">Number of Days</p>
@@ -22,19 +20,19 @@
             </div>
         </x-mary-card>
 
-        <x-mary-card style="width: 50%">
-            <p class="mb-[10px]">Financial Accomplishment</p>
-            <div class="relative w-[400px] h-[200px] mx-auto">
+        <x-mary-card class="w-full md:w-1/2 lg:w-1/3">
+            <p class="mb-2">Financial Accomplishment</p>
+            <div class="relative w-full max-w-[400px] h-[200px] mx-auto">
                 <canvas id="financialAccPercentChart"></canvas>
                 <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
                     <p id="days-count" class="text-3xl font-bold text-gray-900">40%</p>
                 </div>
             </div>
-            <p class="mt-[10px] mb-[10px]">Financial Allocation: P 178,112,318.02</p>
-            <p class="mb-[10px]">Financial Used: P 123,123,123.00</p>
+            <p class="mt-2 mb-2">Financial Allocation: P 178,112,318.02</p>
+            <p class="mb-2">Financial Used: P 123,123,123.00</p>
         </x-mary-card>
-
     </div>
+
 
     <x-mary-card class="mt-10">
 
@@ -102,7 +100,7 @@
             </div>
         </div>
 
-        
+
         <!-- Table Section -->
         <div class="overflow-x-auto mt-10">
             <table class="table w-full">
@@ -136,29 +134,6 @@
                         <td>80%</td>
                         <td>0%</td>
                     </tr>
-
-
-
-                    {{-- @foreach($projects as $project)
-                    <tr onclick="window.location.href='{{ route('dashboard', ['id' => $project['code_no']]) }}'"
-                        class="cursor-pointer hover:bg-gray-100">
-                        <td>{{ $project['code_no'] }}</td>
-                        <td>{{ $project['project_name'] }}</td>
-                        <td>{{ number_format($project['material_cost'], 2) }}</td>
-                        <td>{{ number_format($project['labor_cost'], 2) }}</td>
-                        <td>{{ number_format($project['total_contract'], 2) }}</td>
-                        <td>{{ $project['pow_status'] }}</td>
-                        <td>{{ $project['physical_accomplishment'] }}</td>
-                        <td>{{ $project['duration'] }}</td>
-                        <td>{{ $project['implementation_status'] }}</td>
-                        <td>{{ $project['remarks'] }}</td>
-                        <td>
-                            @if($project['url'])
-                            <a href="{{ $project['url'] }}" class="text-blue-500 underline" target="_blank">View</a>
-                            @endif
-                        </td>
-                    </tr>
-                    @endforeach --}}
                 </tbody>
                 <tfoot>
                     <tr>
