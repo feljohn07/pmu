@@ -44,11 +44,13 @@
                             <td>{{ $project['remarks'] }}</td>
                             {{-- <td>
                                 @if($project['url'])
-                                    <a href="{{ $project['url'] }}" class="text-blue-500 underline" target="_blank">View</a>
+                                <a href="{{ $project['url'] }}" class="text-blue-500 underline" target="_blank">View</a>
                                 @endif
                             </td> --}}
                             <td>
-                                <x-mary-button label="Approve"/>
+                                <button
+                                    class="btn btn-sm {{ $project['pow_status'] == 'For Approval' ? 'btn-warning' : 'btn-success' }}"
+                                    {{ $project['pow_status'] == 'Approved' ? "disabled" : null }}>{{ $project['pow_status'] == 'For Approval' ? 'APPROVE' : 'APPROVED' }}</button>
                             </td>
                         </tr>
                     @endforeach
