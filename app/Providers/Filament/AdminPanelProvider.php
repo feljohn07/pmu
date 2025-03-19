@@ -18,6 +18,9 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
+use Filament\Navigation\NavigationBuilder;
+use Filament\Navigation\NavigationItem;
+
 class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
@@ -54,6 +57,13 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
+            ])
+            ->navigationItems([
+                NavigationItem::make('Homepage')
+                    ->group('Pages')
+                    ->icon('heroicon-o-document')
+                    ->url(fn(): string => '/')
+                    ->sort(1),
             ]);
     }
 }
