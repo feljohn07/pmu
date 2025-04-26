@@ -129,10 +129,10 @@
                             <span class="w-48 inline-block font-medium">PROJECT CATEGORY:</span>
                             <span class="">{{ $project->project_category ?? 'N/A' }}</span>
                         </div>
-                        <div>
+                        {{-- <div>
                             <span class="w-48 inline-block font-medium">PROJECT DESCRIPTION:</span>
                             <span class="">{{ $project->work_description ?? 'N/A' }}</span>
-                        </div>
+                        </div> --}}
                     </div>
 
                     {{-- Right Column --}}
