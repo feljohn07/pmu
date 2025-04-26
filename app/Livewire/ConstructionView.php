@@ -2,10 +2,23 @@
 
 namespace App\Livewire;
 
+use App\Models\Project;
+use DateTime;
 use Livewire\Component;
+use Livewire\Attributes\Url;
 
 class ConstructionView extends Component
 {
+
+    // #[Url]
+    // #[Url(keep: true)]
+    #[Url(keep: true, as: 'id')]
+    public $projectId;
+    public $project;
+
+    public $passedDays;
+    public $remainingDays;
+    
 
     public $weeks = [
         // [
@@ -54,25 +67,53 @@ class ConstructionView extends Component
         ]
     ];
 
-    public $projects = [
-        [
-            'code_no' => 1,
-            'project_name' => 'University Gymnasium and Cultural Center',
-            'material_cost' => 718458.70,
-            'labor_cost' => 294250.00,
-            'total_contract' => 25000000.00,
-            'pow_status' => 'Approved',
-            'physical_accomplishment' => '8.31%',
-            'duration' => 200,
-            'implementation_status' => 'On-Going',
-            'remarks' => '',
-            'url' => 'https://shorturl.at/cefLU',
-        ],
-
-    ];
+    public function mount()
+    {
+        $this->project = Project::find($this->projectId);
+    }
 
     public function render()
     {
-        return view('livewire.construction-view');
+        $progress = $this->calculateProjectProgress($this->project->start_date, $this->project->end_date);
+        return view('livewire.construction-view', [
+            'progress' => $progress,
+        ]);
     }
+
+    // Project Progress and Deadline
+    
+    public function calculateProjectProgress($startDate, $endDate) {
+        // Convert the date strings to DateTime objects
+        $start = new DateTime($startDate);
+        $end = new DateTime($endDate);
+        $current = new DateTime(); // Current date and time
+      
+        // Calculate the total duration of the project
+        $totalInterval = $start->diff($end);
+        $totalDays = $totalInterval->days;
+      
+        // Calculate the duration passed since the start date
+        $passedInterval = $start->diff($current);
+        $this->passedDays = $passedInterval->days;
+      
+        // Calculate the remaining days
+        $this->remainingDays = $totalDays -  $this->passedDays;
+      
+        // Ensure remaining days is not negative (in case current date is after end date)
+        $this->remainingDays = max(0, $this->remainingDays);
+      
+        return "(" .  $this->passedDays . " out of " . ( $this->passedDays + $this->remainingDays) . ") " . $this->remainingDays;
+      }
+
+    // Upload Scanned POW
+
+    // View Scanned POW
+
+    // Add Planned Accomplishment
+
+    // Add Financial Report
+
+    // Update Financial Report
+
+    
 }

@@ -30,8 +30,11 @@
                 <!-- Table Body -->
                 <tbody>
                     @foreach($projects as $project)
-                        <tr onclick="window.location.href='{{ route('view-constructions', ['id' => $project['code_no']]) }}'"
-                            class="cursor-pointer hover:bg-gray-100">
+                        <tr style="cursor: pointer;" class="cursor-pointer hover:bg-gray-100">
+                            <td><x-nav-link :href="route('construction-view', ['id' => $project['id']])"
+                                    :active="request()->routeIs('construction-view')">
+                                    {{ __('View Project') }}
+                                </x-nav-link></td>
                             <td>{{ $project['code_no'] }}</td>
                             <td>{{ $project['project_name'] }}</td>
                             <td>{{ number_format($project['material_cost'], 2) }}</td>
@@ -51,6 +54,7 @@
                                 <button
                                     class="btn btn-sm {{ $project['pow_status'] == 'For Approval' ? 'btn-warning' : 'btn-success' }}"
                                     {{ $project['pow_status'] == 'Approved' ? "disabled" : null }}>{{ $project['pow_status'] == 'For Approval' ? 'APPROVE' : 'APPROVED' }}</button>
+
                             </td>
                         </tr>
                     @endforeach

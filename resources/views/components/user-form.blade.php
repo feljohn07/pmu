@@ -21,6 +21,13 @@
             <input type="password" id="password" wire:model="userForm.password" class="input input-bordered w-full" />
         </div>
 
+        <div class="form-control mb-4">
+            <label for="staff_position" class="label">
+                <span class="label-text">Email:</span>
+            </label>
+            <input type="staff_position" id="staff_position" wire:model="userForm.staff_position" class="input input-bordered w-full" required />
+        </div>
+
         <div class="flex space-x-2">
             <button type="submit" class="btn btn-primary">Submit</button>
             <x-mary-button label="Cancel" @click="$wire.showModal(false, null)" />

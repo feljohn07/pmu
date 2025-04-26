@@ -9,6 +9,7 @@ class Constructions extends Component
 
     public $projects = [
         [
+            'id' => '9',
             'code_no' => 1,
             'project_name' => 'University Gymnasium and Cultural Center',
             'material_cost' => 718458.70,
@@ -22,6 +23,7 @@ class Constructions extends Component
             'url' => 'https://shorturl.at/cefLU',
         ],
         [
+            'id' => '9',
             'code_no' => 2,
             'project_name' => 'Construction of Material Recovery Facility',
             'material_cost' => 224213.20,
@@ -35,6 +37,7 @@ class Constructions extends Component
             'url' => 'http://tinyurl.com/5d7chztv',
         ],
         [
+            'id' => '9',
             'code_no' => 3,
             'project_name' => 'Construction of Records Building',
             'material_cost' => 69601.00,
@@ -48,6 +51,7 @@ class Constructions extends Component
             'url' => '',
         ],
         [
+            'id' => '9',
             'code_no' => 5,
             'project_name' => 'Construction of Organic Agriculture Classroom - CAA',
             'material_cost' => 87528.00,
@@ -61,6 +65,7 @@ class Constructions extends Component
             'url' => '',
         ],
         [
+            'id' => '9',
             'code_no' => 9,
             'project_name' => 'Construction of Hostel Dry Wall Partition at NEW CEGS Building',
             'material_cost' => 171131.00,
@@ -74,6 +79,7 @@ class Constructions extends Component
             'url' => '',
         ],
         [
+            'id' => '9',
             'code_no' => 16,
             'project_name' => 'Construction of Pantry & Comfort Room Extension at E-Performax Building',
             'material_cost' => 238307.30,
@@ -87,6 +93,7 @@ class Constructions extends Component
             'url' => 'https://shorturl.at/vAHN0',
         ],
         [
+            'id' => '9',
             'code_no' => 22,
             'project_name' => 'Addition of Room Partition at Guidance Office (Old Administration)',
             'material_cost' => 176493.00,
@@ -103,5 +110,10 @@ class Constructions extends Component
     public function render()
     {
         return view('livewire.constructions');
+    }
+
+    public function viewProject($codeNo)
+    {
+        return redirect()->route('view-constructions', ['id' => $codeNo]);
     }
 }

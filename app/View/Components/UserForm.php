@@ -12,17 +12,19 @@ class UserForm extends Component
     public ?string $id;
     public string $name;
     public string $email;
+    public string $emailstaffPosition;
     public string $password;
 
     /**
      * Create a new component instance.
      */
-    public function __construct(string $submitMethod, string $id = null, string $name, string $email, string $password)
+    public function __construct(string $submitMethod, string $id = null, string $name, string $email, string $staffPosition, string $password)
     {
         $this->submitMethod = $submitMethod;
         $this->name = $name;
         $this->id = $id;
         $this->email = $email;
+        $this->staffPosition = $staffPosition;
         $this->password = $password;
 
     }
@@ -34,6 +36,7 @@ class UserForm extends Component
         return view('components.user-form', [
             'name' => $this->name,
             'email' => $this->email,
+            'staffPosition' => $this->staffPosition,
             'password' => $this->password,
         ]);
     }

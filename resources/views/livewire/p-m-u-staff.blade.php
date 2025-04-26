@@ -1,3 +1,3 @@
 <div>
-    <livewire:user-table />
+    <livewire:user-table :staffOnly="true" />
 </div>

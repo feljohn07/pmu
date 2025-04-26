@@ -1,6 +1,11 @@
 <div class="mx-20 mt-10">
 
-    <p>University Gymnasium and Cultural Center</p>
+    <p>University Gymnasium and Cultural Center {{ $projectId }}</p>
+
+    {{-- {{ dd($project) }} --}}
+    {{-- {{ $project }}
+
+    {{ $progress }} --}}
 
     <br>
     <div class="flex flex-wrap gap-6 justify-center lg:justify-start">
@@ -15,9 +20,13 @@
                 <canvas id="gaugeChart"></canvas>
                 <div class="absolute top-[150px] left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
                     <p class="text-lg font-semibold text-gray-700">Number of Days</p>
-                    <p id="days-count" class="text-3xl font-bold text-gray-900">{{ 1 }} of 12</p>
+                    <p id="days-count" class="text-3xl font-bold text-gray-900">{{ $passedDays }} of
+                        {{$passedDays + $remainingDays }}
+                    </p>
+                    <p id="days-count" class="text-lg font-bold text-gray-900">{{ $remainingDays }} Days Remaining</p>
                 </div>
             </div>
+            <p class="text-center">{{ $project['start_date'] }} -> {{ $project['end_date'] }}</p>
         </x-mary-card>
 
         <x-mary-card class="w-full md:w-1/2 lg:w-1/3">
@@ -39,7 +48,8 @@
         <div class="flex items-center justify-between w-full">
             <p>Project Details</p>
             <div>
-                <x-mary-button label="Photo Documentation" class="ms-10 me-1" />
+                {{-- <x-mary-button label="Photo Documentation" class="ms-10 me-1" /> --}}
+                <a class="btn" href="{{ route('gantt') }}">View Gantt Chart </a>
                 <x-mary-button label="Scanned POW" />
             </div>
         </div>
@@ -65,30 +75,124 @@
                 </thead>
                 <!-- Table Body -->
                 <tbody>
-                    @foreach($projects as $project)
-                        <tr onclick="window.location.href='{{ route('dashboard', ['id' => $project['code_no']]) }}'"
-                            class="cursor-pointer hover:bg-gray-100">
-                            <td>{{ $project['code_no'] }}</td>
-                            <td>{{ $project['project_name'] }}</td>
-                            <td>{{ number_format($project['material_cost'], 2) }}</td>
-                            <td>{{ number_format($project['labor_cost'], 2) }}</td>
-                            <td>{{ number_format($project['total_contract'], 2) }}</td>
-                            <td>{{ $project['pow_status'] }}</td>
-                            <td>{{ $project['physical_accomplishment'] }}</td>
-                            <td>{{ $project['duration'] }}</td>
-                            <td>{{ $project['implementation_status'] }}</td>
-                            <td>{{ $project['remarks'] }}</td>
-                            <td>
-                                @if($project['url'])
-                                    <a href="{{ $project['url'] }}" class="text-blue-500 underline" target="_blank">View</a>
-                                @endif
-                            </td>
-                        </tr>
-                    @endforeach
+
+                    {{-- <tr onclick="window.location.href='{{ route('dashboard', ['id' => $project['code_no']]) }}'"
+                        --}} <tr class="cursor-pointer hover:bg-gray-100">
+                        <td>{{ $project['id'] }}</td>
+                        <td>{{ $project['project_name'] }}</td>
+                        <td>{{ number_format($project['material_cost'], 2) }}</td>
+                        <td>{{ number_format($project['labor_cost'], 2) }}</td>
+                        <td>{{ number_format($project['total_contract_amount'], 2) }}</td>
+                        <td>{{ $project['pow_status'] }}</td>
+                        <td>{{ $project['physical_accomplishment'] }}</td>
+                        <td>{{ $project['duration'] }}</td>
+                        <td>{{ $project['implementation_status'] }}</td>
+                        <td>{{ $project['remarks'] }}</td>
+                        <td>
+                            @if($project['url'])
+                                <a href="{{ $project['url'] }}" class="text-blue-500 underline" target="_blank">View</a>
+                            @endif
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>
     </x-mary-card>
+
+
+    <x-mary-card class="mt-10">
+
+        <div class="flex items-center justify-between w-full">
+            <p>Individual Program Of Works (POW)</p>
+            <div>
+                {{-- <x-mary-button label="Photo Documentation" class="ms-10 me-1" /> --}}
+                {{-- <x-mary-button label="View Gantt Chart" />
+                <x-mary-button label="Scanned POW" /> --}}
+            </div>
+        </div>
+
+        <!-- Table Section -->
+        <div class="overflow-x-auto mt-10">
+            <table class="table w-full">
+                <!-- Table Head -->
+                <thead>
+                    <tr>
+                        <th>Code No.</th>
+                        <th>Construction Project</th>
+                        <th>Material Cost</th>
+                        <th>Labor Cost</th>
+                        <th>Total Contract Amount</th>
+                        <th>POW Status</th>
+                        <th>Physical Accomplishment</th>
+                        <th>Duration</th>
+                        <th>Implementation Status</th>
+                        <th>Remarks</th>
+                        <th>URL</th>
+                    </tr>
+                </thead>
+                <!-- Table Body -->
+                <tbody>
+
+                    {{-- <tr onclick="window.location.href='{{ route('dashboard', ['id' => $project['code_no']]) }}'"
+                        --}} <tr class="cursor-pointer hover:bg-gray-100">
+                        <td>{{ $project['id'] }}</td>
+                        <td>{{ $project['project_name'] }}</td>
+                        <td>{{ number_format($project['material_cost'], 2) }}</td>
+                        <td>{{ number_format($project['labor_cost'], 2) }}</td>
+                        <td>{{ number_format($project['total_contract_amount'], 2) }}</td>
+                        <td>{{ $project['pow_status'] }}</td>
+                        <td>{{ $project['physical_accomplishment'] }}</td>
+                        <td>{{ $project['duration'] }}</td>
+                        <td>{{ $project['implementation_status'] }}</td>
+                        <td>{{ $project['remarks'] }}</td>
+                        <td>
+                            @if($project['url'])
+                                <a href="{{ $project['url'] }}" class="text-blue-500 underline" target="_blank">View</a>
+                            @endif
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </x-mary-card>
+
+    <x-mary-card class="mt-10">
+
+        <div class="flex items-center justify-between w-full">
+            <p>Users With Access</p>
+            <div>
+                {{-- <x-mary-button label="Photo Documentation" class="ms-10 me-1" /> --}}
+                {{-- <x-mary-button label="View Gantt Chart" /> --}}
+                <x-mary-button label="Give Access" />
+            </div>
+        </div>
+
+        <!-- Table Section -->
+        <div class="overflow-x-auto mt-10">
+            <table class="table w-full">
+                <!-- Table Head -->
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Department</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <!-- Table Body -->
+                <tbody>
+                    <tr class="cursor-pointer hover:bg-gray-100">
+                        <td>{{ $project['project_name'] }}</td>
+                        <td>{{ $project['project_name'] }}</td>
+                        <td>{{ $project['project_name'] }}</td>
+                        <td><x-mary-button label="Remove" /></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </x-mary-card>
+
+    <livewire:project-access-manager projectId="{{ $projectId }}" />
 
     {{-- Accomplishment Report --}}
     <x-mary-card class="mt-10">
@@ -96,7 +200,7 @@
         <div class="flex items-center justify-between w-full">
             <p>Accomplishment Report</p>
             <div>
-                <x-mary-button label="Add Report" />
+                <x-mary-button label="Add Planned Accomplishment" />
             </div>
         </div>
 
@@ -111,6 +215,7 @@
                         <th>Planned Accomplishment</th>
                         <th>Actual Accomplishment</th>
                         <th>Variance</th>
+                        <th>Documentations</th>
                     </tr>
                 </thead>
                 <!-- Table Body -->
@@ -120,12 +225,16 @@
                         <td>10%</td>
                         <td>9%</td>
                         <td>-1%</td>
+                        <td><x-mary-button label='Upload' /><x-mary-button label='View All' /> <x-mary-button
+                                label='Submit Actual Accomplishment %' /></td>
                     </tr>
                     <tr>
                         <td>Febuary</td>
                         <td>10%</td>
                         <td>11%</td>
                         <td>1%</td>
+                        <td><x-mary-button label='Upload' /><x-mary-button label='View All' /> <x-mary-button
+                                label='Submit Actual Accomplishment %' /></td>
                     </tr>
 
                     <tr>
@@ -133,6 +242,8 @@
                         <td>80%</td>
                         <td>80%</td>
                         <td>0%</td>
+                        <td><x-mary-button label='Upload' /><x-mary-button label='View All' /> <x-mary-button
+                                label='Submit Actual Accomplishment %' /></td>
                     </tr>
                 </tbody>
                 <tfoot>
@@ -141,6 +252,8 @@
                         <td>100%</td>
                         <td>100%</td>
                         <td></td>
+                        <td><x-mary-button label='Upload' /><x-mary-button label='View All' /> <x-mary-button
+                                label='Submit Actual Accomplishment %' /></td>
                     </tr>
                 </tfoot>
             </table>
@@ -285,15 +398,15 @@
 
 
 
-        const maxDays = {{ 12 }};
-        const currentDays = {{ 1 }};
+        const passedDays = {{ $passedDays }};
+        const remainingDays = {{ $remainingDays}};
 
         const gaugectx = document.getElementById('gaugeChart').getContext('2d');
         new Chart(gaugectx, {
             type: 'doughnut',
             data: {
                 datasets: [{
-                    data: [currentDays, maxDays - currentDays],
+                    data: [passedDays, remainingDays],
                     backgroundColor: ['#15803d', '#f59e0b'], // Green, Gray, Orange
                     borderWidth: 0
                 }]

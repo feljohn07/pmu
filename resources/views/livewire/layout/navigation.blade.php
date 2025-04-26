@@ -25,32 +25,43 @@ new class extends Component
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}" wire:navigate class="flex items-center space-x-2">
                         <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
-                        <span class="text-lg font-semibold text-gray-800">Project Management Unit</span>
+                        <span class="text-lg font-semibold text-gray-800">PROJECT MONITORING SYSTEM</span>
                     </a>
                 </div>
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
+                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" >
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('constructions')" :active="request()->routeIs('constructions')" wire:navigate>
+                    {{-- <x-nav-link :href="route('projects')" :active="request()->routeIs('projects')" >
+                        {{ __('Projects') }}
+                    </x-nav-link> --}}
+                    <x-nav-link :href="route('constructions')" :active="request()->routeIs('constructions')" >
                         {{ __('Constructions') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('repairs')" :active="request()->routeIs('repairs')" wire:navigate>
+                    <x-nav-link :href="route('repairs')" :active="request()->routeIs('repairs')" >
                         {{ __('Repairs') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('fabrications')" :active="request()->routeIs('fabrications')" wire:navigate>
+                    <x-nav-link :href="route('fabrications')" :active="request()->routeIs('fabrications')" >
                         {{ __('Fabrications') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('pmu-staffs')" :active="request()->routeIs('pmu-staffs')" wire:navigate>
+                    <x-nav-link :href="route('pmu-staffs')" :active="request()->routeIs('pmu-staffs')" >
                         {{ __('PMU Staffs') }}
                     </x-nav-link>
-                    @if(auth()->check() && auth()->user()->hasRole('admin'))
+                    @hasanyrole(['admin', 'staff'])
+                    <x-nav-link :href="route('users')" :active="request()->routeIs('users')" >
+                        {{ __('User Management') }}
+                    </x-nav-link>
+                    @endhasanyrole
+                    {{-- <a href="/admin" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out">
+                       Admin
+                    </a> --}}
+                    {{-- @if(auth()->check() && auth()->user()->hasRole('admin'))
                         <a href="/admin" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out">
                             Admin
                         </a>
-                    @endif
+                    @endif --}}
                 </div>
             </div>
 

@@ -4,13 +4,17 @@
     <div class="flex justify-center items-center bg-gray-100 mt-10">
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            <x-chart-card completed="{{  $constructionsChartData['pending']  }}" ongoing="1" pending="6"
-                chart-name="Construction Projects" />
-            <x-chart-card completed="10" ongoing="1" pending="3" chart-name="Repair Projects" />
-            <x-chart-card completed="10" ongoing="1" pending="1" chart-name="Fabrication Projects" />
+            <x-chart-card completed="{{  $constructionsChartData['completed'] ?? 0 }}"
+                ongoing="{{  $constructionsChartData['ongoing'] ?? 0 }}"
+                pending="{{  $constructionsChartData['pending'] ?? 0 }}" chart-name="Construction Projects" />
+            <x-chart-card completed="{{  $repairsChartData['completed'] ?? 0 }}"
+                ongoing="{{  $repairsChartData['ongoing'] ?? 0 }}" pending="{{  $repairsChartData['pending'] ?? 0 }}"
+                chart-name="Repair Projects" />
+            <x-chart-card completed="{{  $fabricationsChartData['completed'] ?? 0 }}"
+                ongoing="{{  $fabricationsChartData['ongoing'] ?? 0 }}"
+                pending="{{  $fabricationsChartData['pending'] ?? 0 }}" chart-name="Fabrication Projects" />
 
         </div>
-
 
 
     </div>
@@ -24,13 +28,23 @@
                 <thead>
                     <tr>
                         <th>Project Name</th>
+                        <th>Date Start</th>
+                        <th>Duration</th>
                         <th>Status</th>
                         {{-- <th>Balance</th> --}}
                     </tr>
                 </thead>
                 <!-- Table Body -->
                 <tbody>
-                    <tr>
+                    @foreach ($latestProjects as $project)
+                        <tr>
+                            <td>{{ $project['project_name'] }}</td>
+                            <td>{{ $project['start_date'] ?? 'No Date' }}</td>
+                            <td>{{ $project['duration'] }}</td>
+                            <td>{{ $project['implementation_status'] }}</td>
+                        </tr>
+                    @endforeach
+                    {{-- <tr>
                         <td>Project 1</td>
                         <td>For Approval</td>
                     </tr>
@@ -42,7 +56,7 @@
                     <tr>
                         <td>Project 3</td>
                         <td>For Approval</td>
-                    </tr>
+                    </tr> --}}
 
                 </tbody>
             </table>
