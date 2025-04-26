@@ -57,7 +57,7 @@
                                 </div>
                                 {{-- Approval Button Form --}}
                                 <div class="mt-2">
-                                    @role('admin')
+                                    @roles(['admin', 'staff'])
                                     <form action="{{ route('documentation.toggle-approval', $upload->id) }}" method="POST">
                                         @csrf {{-- CSRF Protection --}}
                                         @method('PATCH') {{-- Method Spoofing for PATCH request --}}
@@ -68,7 +68,7 @@
                                             class="{{ $upload->approved ? 'btn-warning btn-outline btn-sm' : 'btn-success btn-sm' }} w-full"
                                             icon="{{ $upload->approved ? 'o-x-circle' : 'o-check-circle' }}" spinner />
                                     </form>
-                                    @endrole
+                                    @endroles
                                     {{-- Optional: Add Delete Button Here Later if needed --}}
                                 </div>
                                 {{-- Delete Button Form --}}
