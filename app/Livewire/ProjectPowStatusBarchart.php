@@ -37,9 +37,9 @@ class ProjectPowStatusBarchart extends Component
         $noPowQuery = clone $query;
 
         $this->summaryStats = [
-            'for-approval' => $forApprovalQuery->where('pow_status', 'for-approval')->count(),
+            'for-approval' => Project::getForApprovalPOWCount($this->category),
             'approved' => $approvedQuery->where('pow_status', 'approved')->count(),
-            'no-pow' => $noPowQuery->where('pow_status', 'no-pow')->count(),
+            'no-pow' => Project::getProjectsWithoutPOWCount($this->category),
         ];
     }
 

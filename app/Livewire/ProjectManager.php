@@ -191,6 +191,16 @@ class ProjectManager extends Component
         $this->resetValidation();
     }
 
+    public function approveProject(Project $project)
+    {
+        $project->pow_status = 'approved';
+
+        $project->save();
+        $this->loadProjects();
+        session()->flash('message', 'Project approved successfully.');
+        $this->refreshPage();
+    }
+
     public function refreshPage()
     {
         redirect(request()->header('Referer'));

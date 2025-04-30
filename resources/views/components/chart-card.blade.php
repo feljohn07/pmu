@@ -12,11 +12,11 @@
         <!-- Text Content -->
         <div class="ml-4 space-y-2 flex-1">
             <p class="text-sm text-gray-600 flex items-center">
-                <span class="w-3 h-3 bg-orange-500 inline-block rounded-full mr-2"></span>
+                <span class="w-3 h-3 bg-green-600  inline-block rounded-full mr-2"></span>
                 Completed: {{ $completed }}
             </p>
             <p class="text-sm text-gray-600 flex items-center">
-                <span class="w-3 h-3 bg-green-600 inline-block rounded-full mr-2"></span>
+                <span class="w-3 h-3 bg-orange-500 inline-block rounded-full mr-2"></span>
                 On-Going: {{ $ongoing }}
             </p>
             <p class="text-sm text-gray-600 flex items-center">
@@ -35,7 +35,7 @@
             labels: ['Completed', 'On-Going', 'Pending'],
             datasets: [{
                 data: [{{ $completed }}, {{ $ongoing }}, {{ $pending }}],
-                backgroundColor: ['#FFA500', '#008000', '#FFD700']
+                backgroundColor: ['#008000', '#FFA500', '#FFD700']
             }]
         },
         options: {

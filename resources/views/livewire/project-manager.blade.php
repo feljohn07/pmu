@@ -42,7 +42,7 @@
                         <th>Total Contract Amount</th> --}}
                         <th>POW Status</th>
                         <th>Progress</th>
-                        <th>Implementation Status</th>
+                        <th>Project Status</th>
                         <th>Duration</th>
                         <th>Start Date</th>
                         <th>End Date</th>
@@ -51,16 +51,19 @@
                 </thead>
                 <tbody>
                     @forelse ($projects as $project)
-                    <tr>
-                        {{-- <tr class="hover:bg-gray-100"> --}}
+                        <tr>
+                            {{--
+                        <tr class="hover:bg-gray-100"> --}}
                             <td>{{ $project['id'] }}</td>
                             <td>{{ $project['project_name'] }}</td>
                             {{-- <td>{{ number_format($project['material_cost'], 2) }}</td>
                             <td>{{ number_format($project['labor_cost'], 2) }}</td>
                             <td>{{ number_format($project['total_contract_amount'], 2) }}</td> --}}
-                            <td>{{ $project['pow_status'] }}</td>
-                            <td>{{ $project['physical_accomplishment'] }} %</td>
-                            <td>{{ $project['implementation_status'] }}</td>
+                            <td>{{ $project['pow_status'] != 'approved' ? ($project->hasPOW() ? 'For Approval' : 'No POW') : 'Approved' }}
+                            </td>
+
+                            <td>{{ $project->calculateTotalAccomplishment() }} %</td>
+                            <td>{{ $project->checkProjectStatus() }}</td>
                             <td>{{ $project['duration'] }}</td>
                             <td>{{ \Carbon\Carbon::parse($project['start_date'])->format('F j, Y') }}</td>
                             <td>{{ \Carbon\Carbon::parse($project['end_date'])->format('F j, Y') }}</td>
@@ -76,20 +79,28 @@
                                         class="btn-warning btn-sm" />
                                     <x-mary-button label="Delete" wire:click="deleteProject({{ $project->id }})"
                                         class="btn-error btn-sm" />
+
                                     @endhasallroles
                                     <x-mary-button label="View" wire:click="viewProject({{ $project->id }})"
                                         class="btn-success btn-sm" />
+                                    
+                                    @hasanyrole(['admin'])
+                                    @if ($project->pow_status != 'approved' && $project->hasPOW())
+                                    | <x-mary-button label="Approve" wire:click="approveProject({{ $project->id }})"
+                                            class="btn-info btn-sm" />
+                                    @endif
+                                    @endhasallroles
                                 </div>
                             </td>
                             {{-- <td>
-                                <x-mary-dropdown icon='o-ellipsis-vertical' top=true >
+                                <x-mary-dropdown icon='o-ellipsis-vertical' top=true>
                                     @hasanyrole(['staff'])
-                                        <x-mary-menu-item wire:click="editProject({{ $project->id }})">
-                                            Edit
-                                        </x-mary-menu-item>
-                                        <x-mary-menu-item wire:click="deleteProject({{ $project->id }})">
-                                            Delete
-                                        </x-mary-menu-item>
+                                    <x-mary-menu-item wire:click="editProject({{ $project->id }})">
+                                        Edit
+                                    </x-mary-menu-item>
+                                    <x-mary-menu-item wire:click="deleteProject({{ $project->id }})">
+                                        Delete
+                                    </x-mary-menu-item>
                                     @endhasanyrole
                                     <x-mary-menu-item wire:click="viewProject({{ $project->id }})">
                                         View
@@ -108,5 +119,5 @@
     </x-mary-card>
 
     {{-- Modal for Add/Edit Project (Existing Code) --}}
-    
+
 </div>

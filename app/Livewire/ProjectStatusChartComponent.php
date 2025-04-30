@@ -20,20 +20,20 @@ class ProjectStatusChartComponent extends Component
     {
         $this->category = $category;
 
-        $query = Project::query();
+        // $query = Project::query();
 
-        if (!empty($this->category)) {
-            $query->where('category', $this->category);
-        }
+        // if (!empty($this->category)) {
+        //     $query->where('category', $this->category);
+        // }
 
-        $CompletedQuery = clone $query;
-        $onGoingQuery = clone $query;
-        $pendingQuery = clone $query;
+        // $CompletedQuery = clone $query;
+        // $onGoingQuery = clone $query;
+        // $pendingQuery = clone $query;
 
         $this->summaryStats = [
-            'completed' => $CompletedQuery->where('implementation_status', 'completed')->count(),
-            'ongoing' => $onGoingQuery->where('implementation_status', 'on-going')->count(),
-            'pending' => $pendingQuery->where('implementation_status', 'pending')->count(),
+            'completed' => Project::getCompletedCount($category),
+            'ongoing' => Project::getOngoingCount($category),
+            'pending' => Project::getPendingCount($category),
         ];
 
         // $this->summaryStats = [

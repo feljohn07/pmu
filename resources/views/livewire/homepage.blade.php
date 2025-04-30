@@ -30,6 +30,7 @@
                         <th>Project Name</th>
                         <th>Date Start</th>
                         <th>Duration</th>
+                        <th>Date End</th>
                         <th>Status</th>
                         {{-- <th>Balance</th> --}}
                     </tr>
@@ -39,9 +40,17 @@
                     @foreach ($latestProjects as $project)
                         <tr>
                             <td>{{ $project['project_name'] }}</td>
-                            <td>{{ $project['start_date'] ?? 'No Date' }}</td>
-                            <td>{{ $project['duration'] }}</td>
-                            <td>{{ $project['implementation_status'] }}</td>
+                            <td>{{ \Carbon\Carbon::parse($project['start_date'])?->format('F j, Y') ?? 'No Date' }}</td>
+                            <td>{{ $project['duration'] }} {{ $project['duration'] > 1 ? 'days' : 'day' }} </td>
+                            <td>{{ \Carbon\Carbon::parse($project->calculatedEndDate())?->format('F j, Y')  }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span
+                                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{$project->checkProjectStatus() === 'Completed' ? 'bg-green-100' :  'bg-yellow-100'}} text-green-800">
+                                    {{ $project->checkProjectStatus() }}
+                                </span>
+                            </td>
+
+
                         </tr>
                     @endforeach
                     {{-- <tr>

@@ -12,11 +12,11 @@
         <!-- Text Content -->
         <div class="ml-4 space-y-2 flex-1">
             <p class="text-sm text-gray-600 flex items-center">
-                <span class="w-3 h-3 bg-orange-500 inline-block rounded-full mr-2"></span>
+                <span class="w-3 h-3  bg-green-600 inline-block rounded-full mr-2"></span>
                 Completed: {{ $summaryStats['completed'] }}
             </p>
             <p class="text-sm text-gray-600 flex items-center">
-                <span class="w-3 h-3 bg-green-600 inline-block rounded-full mr-2"></span>
+                <span class="w-3 h-3 bg-orange-500 inline-block rounded-full mr-2"></span>
                 On-Going: {{ $summaryStats['ongoing'] }}
             </p>
             <p class="text-sm text-gray-600 flex items-center">
@@ -29,15 +29,15 @@
 
 <script>
     var ctx = document.getElementById('donutChart-1').getContext('2d');
-    
+
     var data = [{{ $summaryStats['completed'] }}, {{ $summaryStats['ongoing'] }}, {{ $summaryStats['pending'] }}];
-    var colors = ['#FFA500', '#008000', '#FFD700'];
-    
-    if(({{ $summaryStats['completed'] }} + {{ $summaryStats['ongoing'] }} + {{ $summaryStats['pending'] }}) == 0) {
+    var colors = ['#008000', '#FFA500', '#FFD700'];
+
+    if (({{ $summaryStats['completed'] }} + {{ $summaryStats['ongoing'] }} + {{ $summaryStats['pending'] }}) == 0) {
         data = [1];
         colors = ['#808080']
     }
-    
+
     new Chart(ctx, {
         type: 'doughnut',
         data: {

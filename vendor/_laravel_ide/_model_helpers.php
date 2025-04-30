@@ -2565,8 +2565,8 @@ namespace App\Models {
      * @property string|null $source_of_funds
      * @property string|null $appropriation
      * @property string|null $project_category
-     * @property string|null $end_date
-     * @property string|null $start_date
+     * @property \Illuminate\Support\Carbon|null $end_date
+     * @property \Illuminate\Support\Carbon|null $start_date
      * @property \Illuminate\Support\Carbon|null $updated_at
      * @property \Illuminate\Support\Carbon|null $created_at
      * @property string $category

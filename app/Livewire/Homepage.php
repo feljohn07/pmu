@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Project;
+use Carbon\Carbon;
 use Livewire\Component;
 use App\Models\User;
 
@@ -30,30 +31,38 @@ class Homepage extends Component
         $ongoingQuery = clone $query;
         $pendingQuery = clone $query;
 
+        // dd(Project::whereRaw("DATE(start_date, '+' || duration || ' days') > ? AND category = ?", [Carbon::now(), $category])
+        //     ->count());
+
 
         switch ($category) {
             case 'constructions':
                 // Assign the counts to your property
+                // $this->constructionsChartData = collect([
+                //     'completed' => $completedQuery->where('implementation_status', 'completed')->count(),
+                //     'ongoing' => $ongoingQuery->where('implementation_status', 'on-going')->count(),
+                //     'pending' => $pendingQuery->where('implementation_status', 'pending')->count(),
+                // ]);
                 $this->constructionsChartData = collect([
-                    'completed' => $completedQuery->where('implementation_status', 'completed')->count(),
-                    'ongoing' => $ongoingQuery->where('implementation_status', 'on-going')->count(),
-                    'pending' => $pendingQuery->where('implementation_status', 'pending')->count(),
+                    'completed' => Project::getCompletedCount($category),
+                    'ongoing' => Project::getOngoingCount($category),
+                    'pending' => Project::getPendingCount($category),
                 ]);
                 break;
             case 'repairs':
                 // Assign the counts to your property
                 $this->repairsChartData = collect([
-                    'completed' => $completedQuery->where('implementation_status', 'completed')->count(),
-                    'ongoing' => $ongoingQuery->where('implementation_status', 'on-going')->count(),
-                    'pending' => $pendingQuery->where('implementation_status', 'pending')->count(),
+                    'completed' => Project::getCompletedCount($category),
+                    'ongoing' => Project::getOngoingCount($category),
+                    'pending' => Project::getPendingCount($category),
                 ]);
                 break;
             case 'fabrications':
                 // Assign the counts to your property
                 $this->fabricationsChartData = collect([
-                    'completed' => $completedQuery->where('implementation_status', 'completed')->count(),
-                    'ongoing' => $ongoingQuery->where('implementation_status', 'on-going')->count(),
-                    'pending' => $pendingQuery->where('implementation_status', 'pending')->count(),
+                    'completed' => Project::getCompletedCount($category),
+                    'ongoing' => Project::getOngoingCount($category),
+                    'pending' => Project::getPendingCount($category),
                 ]);
                 break;
             default:

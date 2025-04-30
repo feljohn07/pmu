@@ -27,7 +27,7 @@
         <div class="mt-6 p-4 bg-white shadow rounded-lg">
             {{-- ... existing report details dl list ... --}}
             <div class="mt-4">
-                <a href="{{ url()->previous() }}" class="text-blue-600 hover:underline">
+                <a href="{{ route('project-view', ['id'=> $report->project_id]) }}" class="text-blue-600 hover:underline">
                     &larr; Back to Previous Page
                 </a>
             </div>
@@ -57,7 +57,7 @@
                                 </div>
                                 {{-- Approval Button Form --}}
                                 <div class="mt-2">
-                                    @roles(['admin', 'staff'])
+                                    @hasanyrole('admin|staff')
                                     <form action="{{ route('documentation.toggle-approval', $upload->id) }}" method="POST">
                                         @csrf {{-- CSRF Protection --}}
                                         @method('PATCH') {{-- Method Spoofing for PATCH request --}}
@@ -68,19 +68,21 @@
                                             class="{{ $upload->approved ? 'btn-warning btn-outline btn-sm' : 'btn-success btn-sm' }} w-full"
                                             icon="{{ $upload->approved ? 'o-x-circle' : 'o-check-circle' }}" spinner />
                                     </form>
-                                    @endroles
-                                    {{-- Optional: Add Delete Button Here Later if needed --}}
+                                    {{-- Delete Button Form --}}
+                                    <form action="{{ route('documentation.destroy', $upload->id) }}" method="POST"
+                                        class="flex-1 mt-2"
+                                        onsubmit="return confirm('Are you sure you want to delete this document? This action cannot be undone.');">
+                                        {{-- Added JS Confirmation --}}
+                                        @csrf
+                                        @method('DELETE') {{-- Method Spoofing for DELETE request --}}
+                                        <x-mary-button type="submit" label="Delete" class="btn-error btn-sm w-full"
+                                            icon="o-trash" tooltip="Delete this document permanently" {{-- Added tooltip --}}
+                                            spinner />
+                                    </form>
+                                    @endhasanyrole
+
                                 </div>
-                                {{-- Delete Button Form --}}
-                                <form action="{{ route('documentation.destroy', $upload->id) }}" method="POST"
-                                    class="flex-1 mt-2"
-                                    onsubmit="return confirm('Are you sure you want to delete this document? This action cannot be undone.');">
-                                    {{-- Added JS Confirmation --}}
-                                    @csrf
-                                    @method('DELETE') {{-- Method Spoofing for DELETE request --}}
-                                    <x-mary-button type="submit" label="Delete" class="btn-error btn-sm w-full" icon="o-trash"
-                                        tooltip="Delete this document permanently" {{-- Added tooltip --}} spinner />
-                                </form>
+
                                 <a href="{{ Storage::url($upload->url) }}" class="mt-5 btn btn-success btn-sm w-full"
                                     icon="o-trash" target="_blank" rel="noopener noreferrer">
                                     View Image
