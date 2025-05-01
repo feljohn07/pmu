@@ -37,7 +37,7 @@
                         <th class="text-right">Adj. Unit Cost</th>
                         <th class="text-right">Total Cost</th>
                         <th class="text-center">Duration (Days)</th>
-                        <th class="text-center">Progress (%)</th>
+                        {{-- <th class="text-center">Progress (%)</th> --}}
                         <th></th>
                     </tr>
                 </thead>
@@ -59,15 +59,15 @@
                             <td class="text-right">{{ number_format($item->adjusted_unit_cost, 2) }}</td>
                             <td class="text-right font-semibold">{{ number_format($item->total_item_cost, 2) }}</td>
                             <td class="text-center">{{ $item->duration }}</td>
-                            <td class="text-center">{{ $item->progress }}%</td>
+                            {{-- <td class="text-center">{{ $item->progress }}%</td> --}}
                             <td>
                                 <div class="flex space-x-1 justify-end">
 
                                     @hasanyrole(['admin', 'staff'])
-                                    <x-mary-button icon="o-arrow-path" {{-- Or o-clock, o-pencil --}}
+                                    {{-- <x-mary-button icon="o-arrow-path"
                                         wire:click="openProgressModal({{ $item->id }})"
-                                        class="btn-sm btn-ghost text-yellow-600" {{-- Adjust color if desired --}} spinner
-                                        tooltip="Update Progress" />
+                                        class="btn-sm btn-ghost text-yellow-600"  spinner
+                                        tooltip="Update Progress" /> --}}
                                     {{-- Edit Button --}}
                                     <x-mary-button icon="o-pencil-square" wire:click="editPowItem({{ $item->id }})"
                                         class="btn-sm btn-ghost text-blue-600" spinner tooltip="Edit Item" />
