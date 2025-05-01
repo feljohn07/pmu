@@ -2,12 +2,12 @@
 <div>
     {{-- Session Message Handling (Kept from original for user feedback) --}}
     {{-- @if (session()->has('message'))
-        <x-mary-alert title="Success!" description="{{ session('message') }}" icon="o-check-circle"
-            class="alert-success mb-4" />
+    <x-mary-alert title="Success!" description="{{ session('message') }}" icon="o-check-circle"
+        class="alert-success mb-4" />
     @endif
     @if (session()->has('error'))
-        <x-mary-alert title="Error!" description="{{ session('error') }}" icon="o-exclamation-triangle"
-            class="alert-error mb-4" />
+    <x-mary-alert title="Error!" description="{{ session('error') }}" icon="o-exclamation-triangle"
+        class="alert-error mb-4" />
     @endif --}}
 
     {{-- Accomplishment Report Card (Structure from reference) --}}
@@ -17,9 +17,14 @@
         <div class="flex items-center justify-between w-full">
             <p class="text-lg font-semibold">Accomplishment Report</p> {{-- Adjusted styling slightly --}}
             <div>
+
+                @hasanyrole(['admin', 'staff'])
                 {{-- Button adapted from original component logic --}}
-                <x-mary-button label="Add Planned Accomplishment" wire:click="createPlanReport" icon="o-plus" primary
-                    spinner />
+                <x-mary-button class="btn-sm" label="Add Planned Accomplishment" wire:click="createPlanReport"
+                    icon="o-plus" primary spinner />
+                @endhasanyrole
+
+
             </div>
         </div>
 
@@ -34,7 +39,11 @@
                         <th>Actual Accomplishment (%)</th> {{-- Added (%) for clarity like reference --}}
                         <th>Variance (%)</th> {{-- Added (%) for clarity like reference --}}
                         <th>Documentations</th> {{-- Combined Documentation and Actions --}}
+                        @hasanyrole(['admin', 'staff'])
                         <th>Actions</th> {{-- Combined Documentation and Actions --}}
+                        @endhasanyrole
+
+
                     </tr>
                 </thead>
 
@@ -74,6 +83,8 @@
                             <td>
                                 {{-- Action Buttons --}}
                                 <div class="flex flex-wrap gap-1">
+
+                                    @hasanyrole(['admin', 'staff'])
                                     {{-- Show Edit Plan button ONLY if actual is not yet submitted --}}
                                     @if ($report->actual_accomplishment === null)
                                         <x-mary-button label="Edit Plan" wire:click="editPlanReport({{ $report->id }})"
@@ -93,6 +104,9 @@
 
                                     <x-mary-button wire:click="confirmDelete({{ $report->id }})" icon="o-trash"
                                         class="btn-sm btn-error btn-outline" spinner tooltip="Delete Entry" />
+                                    @endhasanyrole
+
+
                                 </div>
                             </td>
                         </tr>
@@ -196,13 +210,12 @@
         <x-mary-form wire:submit.prevent="saveDocumentation">
             {{-- File Input - Use Mary UI's file input component --}}
             {{-- The `wire:model="filesToUpload"` binds this input to the component property --}}
-            <x-mary-file wire:model="filesToUpload" label="Select Images" hint="Max 5MB per image" multiple
-                crop-after-change>
-                {{-- Loading Indicator --}}
-                <div wire:loading wire:target="filesToUpload" class="text-sm text-gray-500 italic mt-1">
-                    Uploading...
-                </div>
-            </x-mary-file>
+            <x-mary-file wire:model="filesToUpload" label="Select Images" hint="Max 5MB per image" multiple />
+
+            {{-- Loading Indicator --}}
+            <div wire:loading wire:target="filesToUpload" class="text-sm text-gray-500 italic mt-1">
+                Uploading...
+            </div>
 
             {{-- Display Validation Errors Specific to Files --}}
             @error('filesToUpload.*') <span class="text-red-500 text-sm mt-1">{{ $message }}</span> @enderror

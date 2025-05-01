@@ -5,7 +5,13 @@
         subtitle="Details for Project: {{ $project->project_name ?? 'N/A' }}" shadow>
         <x-slot:menu>
             {{-- Add New POW Item Button --}}
-            <x-mary-button label="Add POW Item" icon="o-plus" class="btn-primary" wire:click="createPowItem" spinner />
+            @hasanyrole(['admin', 'staff'])
+            <x-mary-button label="Add POW Item" icon="o-plus" class="btn-primary btn-sm" wire:click="createPowItem"
+                spinner />
+
+            @endhasallroles
+            <a class="btn btn-sm" href="{{ route('gantt.show', [$projectId]) }}">View Gantt Chart </a>
+
         </x-slot:menu>
 
         {{-- Session Messages for List View (Optional) --}}
@@ -32,7 +38,7 @@
                         <th class="text-right">Total Cost</th>
                         <th class="text-center">Duration (Days)</th>
                         <th class="text-center">Progress (%)</th>
-                        <th>Actions</th>
+                        <th></th>
                     </tr>
                 </thead>
                 {{-- Table Body --}}
@@ -56,6 +62,12 @@
                             <td class="text-center">{{ $item->progress }}%</td>
                             <td>
                                 <div class="flex space-x-1 justify-end">
+
+                                    @hasanyrole(['admin', 'staff'])
+                                    <x-mary-button icon="o-arrow-path" {{-- Or o-clock, o-pencil --}}
+                                        wire:click="openProgressModal({{ $item->id }})"
+                                        class="btn-sm btn-ghost text-yellow-600" {{-- Adjust color if desired --}} spinner
+                                        tooltip="Update Progress" />
                                     {{-- Edit Button --}}
                                     <x-mary-button icon="o-pencil-square" wire:click="editPowItem({{ $item->id }})"
                                         class="btn-sm btn-ghost text-blue-600" spinner tooltip="Edit Item" />
@@ -63,6 +75,9 @@
                                     <x-mary-button icon="o-trash" wire:click="deletePowItem({{ $item->id }})"
                                         wire:confirm="Are you sure you want to delete this item?"
                                         class="btn-sm btn-ghost text-red-600" spinner tooltip="Delete Item" />
+                                    @endhasallroles
+
+
 
                                     <x-mary-button icon="o-eye" wire:click="viewForm({{ $item->id }})"
                                         class="btn-sm btn-ghost text-red-600" spinner tooltip="View Form" />
@@ -81,6 +96,28 @@
             </table>
         </div>
     </x-mary-card>
+
+
+    {{-- ****** START: Progress Update Modal ****** --}}
+    <x-mary-modal wire:model="showProgressModal" title="Update Progress"
+        subtitle="Item: {{ $this->progressPowDescription ?? 'N/A' }}" persistent>
+        {{-- Use 'persistent' to prevent closing on backdrop click --}}
+        <x-mary-form wire:submit="saveProgress">
+            <x-mary-input label="Progress Percentage" wire:model="progressValue" type="number" min="0" max="100"
+                suffix="%" hint="Enter value between 0 and 100" /> {{-- Removed 'required' to let Livewire handle it for
+            better error message placement --}}
+            @error('progressValue') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+
+
+            <x-slot:actions>
+                {{-- Use wire:click to call a method that resets state and closes --}}
+                <x-mary-button label="Cancel" wire:click="closeProgressModal" />
+                <x-mary-button label="Save Progress" type="submit" icon="o-check" class="btn-primary"
+                    spinner="saveProgress" />
+            </x-slot:actions>
+        </x-mary-form>
+    </x-mary-modal>
+    {{-- ****** END: Progress Update Modal ****** --}}
 
 
 </div>

@@ -54,7 +54,7 @@
     </x-slot> --}}
     <a href="{{ route('project-view', ['id' => $project->id]) }}"
         class="ms-5 mt-3 inline-flex items-center px-4 py-2 bg-gray-200 text-gray-700 text-sm font-medium rounded hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-        ← Back to Project
+        Back to Project
     </a>
     {{-- Include dhtmlxGantt CSS and JS --}}
     <link rel="stylesheet" href="https://cdn.dhtmlx.com/gantt/edge/dhtmlxgantt.css" type="text/css">
@@ -63,7 +63,7 @@
     {{-- CSRF Token --}}
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <div>
+    <div class='mx-3'>
         {{-- <div class="max-w-7xl mx-auto sm:px-6 lg:px-8"> --}}
             {{-- Display Error Message if passed from controller --}}
             {{-- @isset($errorMessage)
@@ -93,7 +93,7 @@
 
     <script>
         // Configure Gantt (read-only)
-        // gantt.config.readonly = true;
+        gantt.config.readonly = true;
         gantt.config.date_format = "%d-%m-%Y"; // Display format
         gantt.config.details_on_dblclick = false;
         
@@ -142,57 +142,57 @@
 
         let clickTimeout = null;
 
-        gantt.attachEvent("onTaskClick", function (id, e) {
-            // if (clickTimeout) {
-            //     clearTimeout(clickTimeout);
-            //     clickTimeout = null;
-            //     return;
-            // }
+        // gantt.attachEvent("onTaskClick", function (id, e) {
+        //     // if (clickTimeout) {
+        //     //     clearTimeout(clickTimeout);
+        //     //     clickTimeout = null;
+        //     //     return;
+        //     // }
 
-            // clickTimeout = setTimeout(function () {
-            //     clickTimeout = null;
-            //     console.log("Single click on task:", id);
-            //     // Implement single-click behavior here
-            // }, 300); // Adjust the delay as needed
-            const task = gantt.getTask(id);
-            const currentProgress = task.progress ? Math.round(task.progress * 100) : 0;
-            const input = prompt(`Update progress for "${task.text}" (0–100):`, currentProgress);
+        //     // clickTimeout = setTimeout(function () {
+        //     //     clickTimeout = null;
+        //     //     console.log("Single click on task:", id);
+        //     //     // Implement single-click behavior here
+        //     // }, 300); // Adjust the delay as needed
+        //     const task = gantt.getTask(id);
+        //     const currentProgress = task.progress ? Math.round(task.progress * 100) : 0;
+        //     const input = prompt(`Update progress for "${task.text}" (0–100):`, currentProgress);
 
-            if (input === null) {
-                // User canceled the prompt
-                return false;
-            }
+        //     if (input === null) {
+        //         // User canceled the prompt
+        //         return false;
+        //     }
 
-            const newProgress = parseInt(input, 10);
-            if (isNaN(newProgress) || newProgress < 0 || newProgress > 100) {
-                alert("Please enter a valid number between 0 and 100.");
-                return false;
-            }
+        //     const newProgress = parseInt(input, 10);
+        //     if (isNaN(newProgress) || newProgress < 0 || newProgress > 100) {
+        //         alert("Please enter a valid number between 0 and 100.");
+        //         return false;
+        //     }
 
-            task.progress = newProgress / 100;
-            gantt.updateTask(id); // Refresh the task to reflect changes
-            return false; // Prevent default lightbox from opening
-        });
+        //     task.progress = newProgress / 100;
+        //     gantt.updateTask(id); // Refresh the task to reflect changes
+        //     return false; // Prevent default lightbox from opening
+        // });
 
-        gantt.attachEvent("onTaskDblClick", function (id, e) {
-            if (clickTimeout) {
-                clearTimeout(clickTimeout);
-                clickTimeout = null;
-            }
-            console.log("Double click on task:", id);
-            // Implement double-click behavior here
-            return true;
-        });
+        // gantt.attachEvent("onTaskDblClick", function (id, e) {
+        //     if (clickTimeout) {
+        //         clearTimeout(clickTimeout);
+        //         clickTimeout = null;
+        //     }
+        //     console.log("Double click on task:", id);
+        //     // Implement double-click behavior here
+        //     return true;
+        // });
 
-        function zoomToFit() {
-            var project = gantt.getSubtaskDates();
-            if (!project.start_date || !project.end_date) return;
+        // function zoomToFit() {
+        //     var project = gantt.getSubtaskDates();
+        //     if (!project.start_date || !project.end_date) return;
 
-            gantt.config.start_date = gantt.date.add(project.start_date, -1, "day");
-            gantt.config.end_date = gantt.date.add(project.end_date, 1, "day");
+        //     gantt.config.start_date = gantt.date.add(project.start_date, -1, "day");
+        //     gantt.config.end_date = gantt.date.add(project.end_date, 1, "day");
 
-            gantt.render();
-        }
+        //     gantt.render();
+        // }
 
     </script>
 </x-app-layout>

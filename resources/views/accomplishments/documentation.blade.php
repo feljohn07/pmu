@@ -9,27 +9,34 @@
 
     {{-- @section('content') --}}
     <div class="container mx-auto px-4 py-8">
-
-        <x-mary-header title="Documentation for Report: {{ $report->report_date }}" separator />
-
         {{-- Display Status/Error Messages Flashed from Controller --}}
         @if (session('status'))
-            <x-mary-alert title="Success!" description="{{ session('status') }}" icon="o-check-circle"
-                class="alert-success my-4" />
+            <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show"
+                x-transition.duration.500ms>
+                <x-mary-alert title="Success!" description="{{ session('status') }}" icon="o-check-circle"
+                    class="alert-success my-4" />
+            </div>
         @endif
+
         @if (session('error'))
-            <x-mary-alert title="Error!" description="{{ session('error') }}" icon="o-exclamation-triangle"
-                class="alert-error my-4" />
+            <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show"
+                x-transition.duration.500ms>
+                <x-mary-alert title="Error!" description="{{ session('error') }}" icon="o-exclamation-triangle"
+                    class="alert-error my-4" />
+            </div>
         @endif
 
 
         {{-- Report Details (Keep existing code) --}}
-        <div class="mt-6 p-4 bg-white shadow rounded-lg">
+        <div class="p-4 bg-white shadow rounded-lg">
             {{-- ... existing report details dl list ... --}}
-            <div class="mt-4">
-                <a href="{{ route('project-view', ['id'=> $report->project_id]) }}" class="text-blue-600 hover:underline">
-                    &larr; Back to Previous Page
+            <div class="flex justify-between items-center">
+                <a href="{{ route('project-view', ['id' => $report->project_id]) }}" class="btn btn-sm">
+                    Back to Project
                 </a>
+                <div>
+                    {{ $report->report_date }} Report
+                </div>
             </div>
         </div>
 

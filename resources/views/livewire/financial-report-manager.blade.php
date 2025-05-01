@@ -17,9 +17,14 @@
     <div class="flex justify-between items-center mb-4">
         {{-- Use the $projectName variable passed from render --}}
         <h2 class="text-2xl font-semibold">Financial Report</h2>
-        <button wire:click="create()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+
+        @hasanyrole(['admin', 'staff'])
+        <button wire:click="create()" class="btn btn-sm btn-success ">
             Add Report Entry
         </button>
+        @endhasallroles
+
+
     </div>
 
     {{-- Reports Table --}}
@@ -44,36 +49,41 @@
             <tbody>
                 {{-- Use the public $reports property (now a Collection) --}}
                 @forelse ($reports as $report)
-                                <tr>
-                                    <td class="px-5 py-3 border-b border-gray-200 bg-white text-sm">
-                                        {{-- MODIFIED: Displaying the date string --}}
-                                        {{-- Option 1: Display raw string --}}
-                                        {{ $report->report_date }}
+                    <tr>
+                        <td class="px-5 py-3 border-b border-gray-200 bg-white text-sm">
+                            {{-- MODIFIED: Displaying the date string --}}
+                            {{-- Option 1: Display raw string --}}
+                            {{ $report->report_date }}
 
-                                        {{-- Option 2: Attempt to parse and format (safer) --}}
-                                        {{-- @php
-                                            try {
-                                                // Attempt to parse the string (e.g., 'YYYY-MM-DD' or other formats Carbon recognizes)
-                                                // and format it nicely. Adjust 'F Y' as needed.
-                                                $formattedDate = \Carbon\Carbon::parse($report->report_date)->format('F Y');
-                                            } catch (\Exception $e) {
-                                                // If parsing fails, fallback to the raw string stored in the database
-                                                $formattedDate = $report->report_date ?? ''; // Use null coalesce for safety
-                                            }
-                                        @endphp
-                                        {{ $formattedDate }} --}}
-                                        {{-- End Option 2 --}}
-                                    </td>
-                                    <td class="px-5 py-3 border-b border-gray-200 bg-white text-sm text-right">
-                                        {{ number_format($report->amount, 2) }}
-                                    </td>
-                                    <td class="px-5 py-3 border-b border-gray-200 bg-white text-sm text-right">
-                                        <button wire:click="edit({{ $report->id }})"
-                                            class="text-indigo-600 hover:text-indigo-900 mr-2">Edit</button>
-                                        <button wire:click="confirmDelete({{ $report->id }})"
-                                            class="text-red-600 hover:text-red-900">Delete</button>
-                                    </td>
-                                </tr>
+                            {{-- Option 2: Attempt to parse and format (safer) --}}
+                            {{-- @php
+                            try {
+                            // Attempt to parse the string (e.g., 'YYYY-MM-DD' or other formats Carbon recognizes)
+                            // and format it nicely. Adjust 'F Y' as needed.
+                            $formattedDate = \Carbon\Carbon::parse($report->report_date)->format('F Y');
+                            } catch (\Exception $e) {
+                            // If parsing fails, fallback to the raw string stored in the database
+                            $formattedDate = $report->report_date ?? ''; // Use null coalesce for safety
+                            }
+                            @endphp
+                            {{ $formattedDate }} --}}
+                            {{-- End Option 2 --}}
+                        </td>
+                        <td class="px-5 py-3 border-b border-gray-200 bg-white text-sm text-right">
+                            {{ number_format($report->amount, 2) }}
+                        </td>
+                        <td class="px-5 py-3 border-b border-gray-200 bg-white text-sm text-right">
+
+                            @hasanyrole(['admin', 'staff'])
+                            <button wire:click="edit({{ $report->id }})"
+                                class="text-indigo-600 hover:text-indigo-900 mr-2">Edit</button>
+                            <button wire:click="confirmDelete({{ $report->id }})"
+                                class="text-red-600 hover:text-red-900">Delete</button>
+                            @endhasallroles
+
+
+                        </td>
+                    </tr>
                 @empty
                     <tr>
                         <td colspan="3" class="text-center py-4 border-b border-gray-200 bg-white text-sm">No financial
@@ -108,7 +118,8 @@
             <div class="relative top-20 mx-auto p-5 border w-full max-w-md shadow-lg rounded-md bg-white">
                 <div class="mt-3 text-center">
                     <h3 class="text-lg leading-6 font-medium text-gray-900">
-                        {{ $selectedReportId ? 'Edit Report Entry' : 'Add New Report Entry' }}</h3>
+                        {{ $selectedReportId ? 'Edit Report Entry' : 'Add New Report Entry' }}
+                    </h3>
                     <form wire:submit.prevent="store" class="mt-2 px-7 py-3">
                         <div class="mb-4">
                             <label for="report_date" class="block text-sm font-medium text-gray-700 text-left">Report Date
@@ -122,7 +133,7 @@
                             {{-- <input type="date" id="report_date" wire:model.defer="report_date"
                                 class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
                             --}}
-                            @error('report_date') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror 
+                            @error('report_date') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                         </div>
 
                         <div class="mb-4">

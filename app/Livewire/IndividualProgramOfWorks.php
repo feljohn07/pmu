@@ -53,9 +53,10 @@ class IndividualProgramOfWorks extends Component
     // Form Array/Object for Indirect Costs
     public $indirectCostData = []; // Initialized in resetForm/loadPowItemData
 
-    // -------------------------------------------------------------
-    // Lifecycle Hooks & Main View Logic
-    // -------------------------------------------------------------
+    public bool $showProgressModal = false;
+    public ?int $progressPowId = null;
+    public ?string $progressPowDescription = null;
+    public int $progressValue = 0; // Or string if you prefer, validation will handle type
 
     public function mount($id)
     {
@@ -63,7 +64,110 @@ class IndividualProgramOfWorks extends Component
         $this->loadProjectData(); // Load project details and POW list
         $this->resetForm();       // Initialize form properties
     }
+    public function openProgressModal(int $powId)
+    {
+        try {
+            // Find the item efficiently
+            $pow = $this->programOfWorks->firstWhere('id', $powId);
 
+            if (!$pow) {
+                // If not found in current collection (maybe stale data?), fetch from DB
+                $pow = IndividualProgramOfWork::select('id', 'item_description', 'work_description', 'item_number', 'progress')
+                    ->where('project_id', $this->projectId) // Security check
+                    ->findOrFail($powId);
+            }
+
+            $this->progressPowId = $pow->id;
+            // Use item_description or fallback to work_description or item number
+            $this->progressPowDescription = trim($pow->item_description ?: $pow->work_description ?: ('Item ' . $pow->item_number));
+            $this->progressValue = $pow->progress;
+            $this->showProgressModal = true;
+            $this->resetValidation('progressValue'); // Clear previous validation errors for the modal input
+
+        } catch (Exception $e) {
+            Log::error("Error opening progress modal for POW ID {$powId}: " . $e->getMessage());
+            session()->flash('error', 'Could not load item details for progress update.');
+        }
+    }
+
+    /**
+     * Close the progress update modal and reset its state.
+     */
+    public function closeProgressModal()
+    {
+        $this->showProgressModal = false;
+        $this->reset(['progressPowId', 'progressPowDescription', 'progressValue']);
+        $this->resetValidation('progressValue'); // Clear validation errors when closing
+    }
+
+    /**
+     * Validate and save the updated progress from the modal.
+     */
+    public function saveProgress()
+    {
+        // 1. Validate the progress value from the modal property
+        $validated = $this->validate([
+            'progressValue' => ['required', 'integer', 'min:0', 'max:100']
+        ], [
+            'progressValue.required' => 'Progress value is required.',
+            'progressValue.integer' => 'Progress must be a whole number.',
+            'progressValue.min' => 'Progress cannot be less than 0.',
+            'progressValue.max' => 'Progress cannot exceed 100.',
+        ]);
+
+        // Ensure an ID was actually set when the modal opened
+        if (!$this->progressPowId) {
+            session()->flash('error', 'Error: No item selected for progress update.');
+            $this->closeProgressModal(); // Close modal and reset state
+            return;
+        }
+
+        DB::beginTransaction();
+        try {
+            // 2. Find the POW item from DB for update, ensuring it belongs to the project
+            $pow = IndividualProgramOfWork::where('id', $this->progressPowId)
+                ->where('project_id', $this->projectId)
+                ->firstOrFail();
+
+            // 3. Get the validated progress value
+            $newProgress = $validated['progressValue'];
+
+            // 4. Update the progress if it has changed
+            if ($pow->progress != $newProgress) {
+                $pow->progress = $newProgress;
+                $pow->save();
+                DB::commit();
+
+                // 5. Refresh the specific item in the main collection for immediate UI update
+                $index = $this->programOfWorks->search(fn($currentItem) => $currentItem->id === $this->progressPowId);
+                if ($index !== false) {
+                    $this->programOfWorks->put($index, $pow); // Update the object in the collection
+                }
+
+                // 6. Close modal & provide feedback
+                $this->closeProgressModal();
+                session()->flash('success', "Progress for item '{$this->progressPowDescription}' updated to {$newProgress}%.");
+                // Optionally use toasts: $this->dispatch('notify', ...);
+            } else {
+                // No change, just close the modal
+                DB . rollBack(); // Nothing to commit
+                $this->closeProgressModal();
+                // Optionally notify user that no change was made
+            }
+
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            DB::rollBack();
+            Log::error("Error saving progress: POW item ID {$this->progressPowId} not found or doesn't belong to project {$this->projectId}.");
+            session()->flash('error', 'Error: Item not found or access denied.');
+            $this->closeProgressModal(); // Close modal even on this error
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error("Error saving progress for POW ID {$this->progressPowId}: " . $e->getMessage());
+            // Keep modal open and show error message within the modal context
+            $this->addError('progressValue', 'An unexpected error occurred while saving: ' . $e->getMessage());
+            // Do NOT close the modal here, let the user see the error and retry/cancel
+        }
+    }
     public function loadProjectData()
     {
         try {
@@ -543,7 +647,8 @@ class IndividualProgramOfWorks extends Component
         }
     }
 
-    public function viewForm($powId) {
+    public function viewForm($powId)
+    {
         redirect(route('pow-form', [$powId]));
     }
 

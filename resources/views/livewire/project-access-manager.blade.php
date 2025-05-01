@@ -6,11 +6,15 @@
             <div class="flex justify-between items-center mb-2">
                 <h4 class="text-lg font-medium mb-2">Current Users with Access:</h4>
                 {{-- Button to open the modal --}}
-                <x-mary-button label="Give Access" icon="o-plus" wire:click="openUserModal" class="btn-primary btn-sm" spinner="openUserModal" />
+                @hasanyrole(['admin', 'staff'])
+                <x-mary-button label="Give Access" icon="o-plus" wire:click="openUserModal" class="btn-primary btn-sm"
+                    spinner="openUserModal" />
+                @endhasallroles
+
             </div>
 
             {{-- List of users currently with access --}}
-            
+
             @if ($project->users->isNotEmpty())
                 <div class="overflow-x-auto">
                     <table class="table table-zebra w-full">
@@ -18,18 +22,25 @@
                             <tr>
                                 <th>Name</th>
                                 <th>Email</th>
+                                @hasanyrole(['admin', 'staff'])
                                 <th>Actions</th>
+                                @endhasallroles
+
+
                             </tr>
                         </thead>
                         <tbody>
-                             {{-- Order users by name for display --}}
+                            {{-- Order users by name for display --}}
                             @foreach ($project->users()->orderBy('name')->get() as $user)
                                 <tr>
                                     <td>{{ $user->name }}</td>
                                     <td>{{ $user->email }}</td>
                                     <td>
-                                        {{-- Example Revoke Button --}}
-                                        <x-mary-button icon="o-trash" wire:click="revokeAccess({{ $user->id }})" wire:confirm="Are you sure you want to revoke access for {{ $user->name }}?" spinner class="btn-ghost btn-xs text-red-500" />
+                                        @hasanyrole(['admin', 'staff'])
+                                        <x-mary-button icon="o-trash" wire:click="revokeAccess({{ $user->id }})"
+                                            wire:confirm="Are you sure you want to revoke access for {{ $user->name }}?" spinner
+                                            class="btn-ghost btn-xs text-red-500" />
+                                        @endhasallroles
                                     </td>
                                 </tr>
                             @endforeach
@@ -42,38 +53,36 @@
         </div>
 
         {{-- User Selection Modal --}}
-        <x-mary-modal wire:model="showUserModal" title="Grant Access to Users" subtitle="Select users to add to '{{ $project->name }}'">
+        <x-mary-modal wire:model="showUserModal" title="Grant Access to Users"
+            subtitle="Select users to add to '{{ $project->name }}'">
 
             {{-- Search Input --}}
-            <x-mary-input label="Search Users" wire:model.live.debounce.300ms="userSearch" icon="o-magnifying-glass" placeholder="Search by name or email..." class="mb-4" />
+            <x-mary-input label="Search Users" wire:model.live.debounce.300ms="userSearch" icon="o-magnifying-glass"
+                placeholder="Search by name or email..." class="mb-4" />
 
             {{-- List of Available Users --}}
             <div class="max-h-96 overflow-y-auto pr-2"> {{-- Scrollable area for user list --}}
                 @if(count($this->availableUsers)) {{-- Use the computed property --}}
                     <div class="space-y-2">
                         @foreach ($this->availableUsers as $user)
-                            <x-mary-checkbox
-                                :label="$user->name . ' (' . $user->email . ')'"
-                                id="user-{{ $user->id }}"
-                                value="{{ $user->id }}"
-                                wire:model.live="selectedUserIds" {{-- Use .live if immediate feedback needed, otherwise omit --}}
-                                class="p-2 rounded hover:bg-base-200"
-                            />
+                            <x-mary-checkbox :label="$user->name . ' (' . $user->email . ')'" id="user-{{ $user->id }}"
+                                value="{{ $user->id }}" wire:model.live="selectedUserIds" {{-- Use .live if immediate feedback
+                                needed, otherwise omit --}} class="p-2 rounded hover:bg-base-200" />
                         @endforeach
                     </div>
                 @elseif(strlen($userSearch) > 0)
-                     <p class="text-center text-gray-500 py-4">No users found matching "{{ $userSearch }}".</p>
+                    <p class="text-center text-gray-500 py-4">No users found matching "{{ $userSearch }}".</p>
                 @else
-                     <p class="text-center text-gray-500 py-4">No users available to add.</p>
+                    <p class="text-center text-gray-500 py-4">No users available to add.</p>
                 @endif
 
                 {{-- Loading indicator while searching --}}
                 <div wire:loading wire:target="userSearch" class="text-center py-4">
-                    <x-mary-loading class="text-primary"/>
+                    <x-mary-loading class="text-primary" />
                 </div>
-                 {{-- Loading indicator while fetching computed property --}}
+                {{-- Loading indicator while fetching computed property --}}
                 <div wire:loading wire:target="availableUsers" class="text-center py-4">
-                    <x-mary-loading class="text-secondary"/>
+                    <x-mary-loading class="text-secondary" />
                 </div>
             </div>
 
@@ -81,16 +90,19 @@
             <x-slot:actions>
                 {{-- Note: Clicking Cancel automatically closes the modal via wire:model --}}
                 <x-mary-button label="Cancel" @click="$wire.showUserModal = false" />
-                <x-mary-button label="Grant Access" class="btn-primary" wire:click="grantAccess" spinner="grantAccess" :disabled="empty($selectedUserIds)" />
+                <x-mary-button label="Grant Access" class="btn-primary" wire:click="grantAccess" spinner="grantAccess"
+                    :disabled="empty($selectedUserIds)" />
             </x-slot:actions>
         </x-mary-modal>
 
     @elseif($projectId)
         {{-- Project Not Found Error --}}
-        <x-mary-alert title="Error" description="Project with ID '{{ $projectId }}' not found." icon="o-exclamation-triangle" class="alert-error" />
+        <x-mary-alert title="Error" description="Project with ID '{{ $projectId }}' not found."
+            icon="o-exclamation-triangle" class="alert-error" />
     @else
-         {{-- No Project ID Provided --}}
-         <x-mary-alert title="Missing Information" description="Please provide a project ID." icon="o-information-circle" class="alert-warning" />
+        {{-- No Project ID Provided --}}
+        <x-mary-alert title="Missing Information" description="Please provide a project ID." icon="o-information-circle"
+            class="alert-warning" />
     @endif
 
 </x-mary-card>

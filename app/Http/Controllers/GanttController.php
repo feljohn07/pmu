@@ -32,16 +32,16 @@ class GanttController extends Controller
             $ganttDateFormat = 'd-m-Y'; // Date format for Gantt display
 
             // Add the specific project as the root item
-            $ganttData[] = [
-                'id'         => 'project_' . $project->id,
-                'text'       => $project->project_name,
-                'start_date' => Carbon::parse($project->start_date)->format($ganttDateFormat),
-                'duration'   => $project->duration,
-                'progress'   => $project->physical_accomplishment / 100, // Convert 0-100 to 0-1
-                'open'       => true, // Keep the project expanded
-                'type'       => 'project',
-                'parent'     => 0
-            ];
+            // $ganttData[] = [
+            //     'id'         => 'project_' . $project->id,
+            //     'text'       => $project->project_name,
+            //     'start_date' => Carbon::parse($project->start_date)->format($ganttDateFormat),
+            //     'duration'   => $project->duration,
+            //     'progress'   => $project->physical_accomplishment / 100, // Convert 0-100 to 0-1
+            //     'open'       => true, // Keep the project expanded
+            //     'type'       => 'project',
+            //     'parent'     => 0
+            // ];
 
             // Add individual program of works (tasks) for THIS project
             foreach ($project->individualProgramOfWorks as $task) {
@@ -53,7 +53,7 @@ class GanttController extends Controller
                     'start_date' => $startDateFormatted,
                     'duration'   => $task->duration,
                     'progress'   => $task->progress / 100, // Convert 0-100 to 0-1
-                    'parent'     => 'project_' . $project->id // Link to the parent project
+                    // 'parent'     => 'project_' . $project->id // Link to the parent project
                 ];
             }
 

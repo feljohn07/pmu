@@ -76,7 +76,7 @@ class ProjectView extends Component
     public function mount()
     {
         $this->project = Project::find($this->projectId);
-        $this->financialAllocation =  $this->project->total_contract_amount;
+        $this->financialAllocation = $this->project->calculateTotalPOWCost();
         $this->totalAllocationUsed = FinancialReport::where('project_id', $this->projectId)->sum('amount');
 
         $this->accomplishmentReport = AccomplishmentReport::where('project_id', $this->projectId)->whereNot('actual_accomplishment', null)->get();
@@ -85,7 +85,7 @@ class ProjectView extends Component
 
     public function render()
     {
-        $progress = $this->calculateProjectProgress($this->project->start_date, $this->project->end_date);
+        $progress = $this->calculateProjectProgress($this->project->start_date, $this->project->calculatedEndDate());
         return view('livewire.project-view', [
             'progress' => $progress,
         ]);
@@ -117,6 +117,10 @@ class ProjectView extends Component
         return "(" . $this->passedDays . " out of " . ($this->passedDays + $this->remainingDays) . ") " . $this->remainingDays;
     }
 
+    public function editProjectRedirect(Project $project)
+    {
+        redirect(route('edit-project', [$project->id, $project->category]));
+    }
     // Upload Scanned POW
 
     // View Scanned POW

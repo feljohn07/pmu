@@ -1,4 +1,4 @@
-<div class="mx-20 mt-10">
+<div class="lg:mx-20 md:mx-10 sm:mx-10 mt-10">
 
     <div class="flex justify-between">
 
@@ -6,7 +6,7 @@
             <h1 class="text-lg font-bold">PROJECT NAME: </h1>
             <h1 class="text-3xl font-bold">{{ $project->project_name }}</h1>
         </div>
-        <a class="btn btn-sm" href="{{ route('gantt.show', [$projectId]) }}">View Gantt Chart </a>
+
     </div>
 
 
@@ -16,59 +16,78 @@
     {{ $progress }} --}}
 
     <br>
-    <div class="flex flex-wrap gap-6 justify-center lg:justify-start">
+    <div class="flex flex-wrap justify-center lg:justify-start">
         <x-mary-card class="w-full">
             <p>Monthly Report</p>
             <canvas id="weeklyAccomplishmentChart"></canvas>
         </x-mary-card>
 
-        <x-mary-card class="w-full md:w-1/2 lg:w-1/3">
-            <p>Project Duration</p>
-            <div class="relative mt-6 w-full max-w-[400px] h-[200px] mx-auto">
-                <canvas id="gaugeChart"></canvas>
-                <div class="absolute top-[150px] left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
-                    <p class="text-lg font-semibold text-gray-700">Number of Days</p>
-                    <p id="days-count" class="text-3xl font-bold text-gray-900">{{ $passedDays }} of
-                        {{$passedDays + $remainingDays }}
-                    </p>
-                    <p id="days-count" class="text-lg font-bold text-gray-900">{{ $remainingDays }} Days Remaining
-                    </p>
+        <div class="w-full md:w-1/2 lg:w-1/3 pe-2 pt-2">
+            <x-mary-card class="">
+                <p>Project Duration</p>
+                <div class="relative mt-6 w-full max-w-[400px] h-[200px] mx-auto">
+                    <canvas id="gaugeChart"></canvas>
+                    <div class="absolute top-[150px] left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
+                        <p class="text-lg font-semibold text-gray-700">Number of Days</p>
+                        <p id="days-count" class="text-3xl font-bold text-gray-900">{{ $passedDays }} of
+                            {{$passedDays + $remainingDays }}
+                        </p>
+                        <p id="days-count" class="text-lg font-bold text-gray-900">{{ $remainingDays }} Days Remaining
+                        </p>
+                    </div>
                 </div>
-            </div>
-            <p class="text-center">{{ \Carbon\Carbon::parse($project['start_date'])->format('F j, Y') }} TO
-                {{ \Carbon\Carbon::parse($project['end_date'])->format('F j, Y') }}
-            </p>
-        </x-mary-card>
+                <p class="text-center">{{ \Carbon\Carbon::parse($project['start_date'])->format('F j, Y') }} TO
+                    {{ \Carbon\Carbon::parse($project['end_date'])->format('F j, Y') }}
+                </p>
+            </x-mary-card>
+        </div>
 
-        <x-mary-card class="w-full md:w-1/2 lg:w-1/3">
-            <p class="mb-2">Financial Accomplishment</p>
-            <div class="relative w-full max-w-[400px] h-[200px] mx-auto">
-                <canvas id="financialAccPercentChart"></canvas>
-                <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
-                    <p id="days-count" class="text-3xl font-bold text-gray-900">
 
-                        @if ($financialAllocation != 0)
-                            {{ number_format(($totalAllocationUsed / $financialAllocation) * 100, 2) }}%
-                        @else
-                            0.00% {{-- Or display N/A, or handle as appropriate --}}
-                        @endif
-                    </p>
+        <div class="w-full md:w-1/2 lg:w-1/3 pt-2">
+            <x-mary-card class="">
+                <p class="mb-2">Financial Accomplishment</p>
+                <div class="relative w-full max-w-[400px] h-[200px] mx-auto">
+                    <canvas id="financialAccPercentChart"></canvas>
+                    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
+                        <p id="days-count" class="text-3xl font-bold text-gray-900">
+
+                            @if ($financialAllocation != 0)
+                                {{ number_format(($totalAllocationUsed / $financialAllocation) * 100, 2) }}%
+                            @else
+                                0.00% {{-- Or display N/A, or handle as appropriate --}}
+                            @endif
+                        </p>
+                    </div>
                 </div>
-            </div>
-            <p class="mt-2 mb-2">Financial Allocation: P {{ $financialAllocation }}</p>
-            <p class="mb-2">Financial Used: P {{ $totalAllocationUsed }}</p>
-        </x-mary-card>
+                <div class="flex justify-between mt-2 mb-2 ">
+                    <div class="">Financial Allocation:</div>
+                    <div> P {{ number_format($financialAllocation, 2) }}</div>
+                </div>
+
+                <div class="flex justify-between mt-2 mb-2 ">
+                    <div class="">Financial Used:</div>
+                    <div>P {{ number_format($totalAllocationUsed, 2) }}</div>
+                </div>
+
+            </x-mary-card>
+        </div>
+
     </div>
 
 
-    <x-mary-card class="mt-10">
+    <x-mary-card class=" mt-10">
 
         <div class="flex items-center justify-between w-full">
             <p>Project Details</p>
             <div>
                 {{-- <x-mary-button label="Photo Documentation" class="ms-10 me-1" /> --}}
                 <a class="btn btn-sm" href="{{ route('project-form', [$projectId]) }}">View Form </a>
-                {{-- <a class="btn btn-sm" href="{{ route('project-form', [$projectId]) }}">Make Changes</a> --}}
+                @hasanyrole(['admin', 'staff'])
+                <x-mary-button label="Edit" wire:click="editProjectRedirect({{ $projectId }})"
+                    class="btn-warning btn-sm" />
+                @endhasallroles
+                {{-- <a class="btn btn-sm" href="{{ route('project-form', [$projectId]) }}">Make
+                    Changes</a> --}}
                 {{-- <x-mary-button label="Scanned POW" class="btn-sm" /> --}}
             </div>
         </div>
@@ -81,13 +100,13 @@
                     <tr>
                         <th>Code No.</th>
                         <th>Construction Project</th>
-                        <th>Material Cost</th>
+                        {{-- <th>Material Cost</th>
                         <th>Labor Cost</th>
-                        <th>Total Contract Amount</th>
+                        <th>Total Contract Amount</th> --}}
                         <th>POW Status</th>
-                        <th>Physical Accomplishment</th>
+                        {{-- <th>Physical Accomplishment</th> --}}
                         <th>Duration</th>
-                        <th>Implementation Status</th>
+                        {{-- <th>Implementation Status</th> --}}
                         {{-- <th>Remarks</th> --}}
                         {{-- <th>URL</th> --}}
                     </tr>
@@ -95,21 +114,20 @@
                 <!-- Table Body -->
                 <tbody>
 
-                    {{-- <tr onclick="window.location.href='{{ route('dashboard', ['id' => $project['code_no']]) }}'"
-                        --}} <tr class="cursor-pointer hover:bg-gray-100">
+                    <tr class="cursor-pointer hover:bg-gray-100">
                         <td>{{ $project['id'] }}</td>
                         <td>{{ $project['project_name'] }}</td>
-                        <td>{{ number_format($project['material_cost'], 2) }}</td>
+                        {{-- <td>{{ number_format($project['material_cost'], 2) }}</td>
                         <td>{{ number_format($project['labor_cost'], 2) }}</td>
-                        <td>{{ number_format($project['total_contract_amount'], 2) }}</td>
+                        <td>{{ number_format($project['total_contract_amount'], 2) }}</td> --}}
                         <td>{{ $project['pow_status'] }}</td>
-                        <td>{{ $project['physical_accomplishment'] }}</td>
+                        {{-- <td>{{ $project['physical_accomplishment'] }}</td> --}}
                         <td>{{ $project['duration'] }}</td>
-                        <td>{{ $project['implementation_status'] }}</td>
+                        {{-- <td>{{ $project['implementation_status'] }}</td> --}}
                         {{-- <td>{{ $project['remarks'] }}</td> --}}
                         {{-- <td>
                             @if($project['url'])
-                                <a href="{{ $project['url'] }}" class="text-blue-500 underline" target="_blank">View</a>
+                            <a href="{{ $project['url'] }}" class="text-blue-500 underline" target="_blank">View</a>
                             @endif
                         </td> --}}
                     </tr>
@@ -326,6 +344,30 @@
             data: {
                 datasets: [{
                     data: [financialAccPercent, 100 - financialAccPercent],
+                    backgroundColor: ['#15803d', '#f59e0b'], // Green, Gray, Orange
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '70%',
+                rotation: -90,
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+
+
+        const actualAccomplishmentChart = ({{ $totalAllocationUsed }} / {{ $financialAllocation }}) * 100;
+
+        const actualAccomplishmentChartCtx = document.getElementById('actualAccomplishmentChartChart').getContext('2d');
+        new Chart(actualAccomplishmentChartCtx, {
+            type: 'doughnut',
+            data: {
+                datasets: [{
+                    data: [actualAccomplishmentChart, 100 - actualAccomplishmentChart],
                     backgroundColor: ['#15803d', '#f59e0b'], // Green, Gray, Orange
                     borderWidth: 0
                 }]

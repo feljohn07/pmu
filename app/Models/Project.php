@@ -341,4 +341,21 @@ class Project extends Model
         // Use '?? 0' to return 0 if there are no accomplishments or the sum is null.
         return $this->accomplishments()->sum($column) ?? 0;
     }
+
+    // TODO add totalPOWCost
+
+    public function calculateTotalPOWCost(): float
+    {
+        // Check if the relationship method exists first for robustness
+        if (!method_exists($this, 'individualProgramOfWorks')) {
+            // Log::warning("Attempted to call calculateTotalPOWCost, but the 'individualProgramOfWorks' relationship method is missing in the Project model.");
+            return 0.0; // Or throw an exception
+        }
+
+        // Use the sum() method on the relationship to efficiently calculate the total cost
+        // This avoids loading all related models into memory
+        return $this->individualProgramOfWorks()->sum('grand_total');
+    }
+
 }
+

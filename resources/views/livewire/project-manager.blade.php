@@ -84,12 +84,12 @@
                                     <x-mary-button label="View" wire:click="viewProject({{ $project->id }})"
                                         class="btn-success btn-sm" />
                                     
-                                    @hasanyrole(['admin'])
+                                    @hasrole('admin')
                                     @if ($project->pow_status != 'approved' && $project->hasPOW())
                                     | <x-mary-button label="Approve" wire:click="approveProject({{ $project->id }})"
                                             class="btn-info btn-sm" />
                                     @endif
-                                    @endhasallroles
+                                    @endhasrole
                                 </div>
                             </td>
                             {{-- <td>
