@@ -49,7 +49,9 @@
                     @foreach($report->documentationUploads as $upload)
                         <div class="border rounded-lg overflow-hidden shadow-md bg-white flex flex-col">
                             {{-- Image Display --}}
-                            <img src="{{ Storage::url($upload->url) }}" alt="Documentation Image"
+                            {{-- <img src="{{ Storage::url($upload->url) }}" alt="Documentation Image" --}} 
+                            <img
+                                src="{{ url('storage/app/public/' . $upload->url) }}" alt="Documentation Image"
                                 class="w-full h-48 object-cover">
 
                             {{-- Details and Actions --}}
@@ -90,8 +92,13 @@
 
                                 </div>
 
-                                <a href="{{ Storage::url($upload->url) }}" class="mt-5 btn btn-success btn-sm w-full"
+                                {{-- <a href="{{ Storage::url($upload->url) }}" class="mt-5 btn btn-success btn-sm w-full"
                                     icon="o-trash" target="_blank" rel="noopener noreferrer">
+                                    View Image
+                                </a> --}}
+
+                                <a href="{{ url('storage/app/public/' . $upload->url) }}"
+                                    class="mt-5 btn btn-success btn-sm w-full" target="_blank" rel="noopener noreferrer">
                                     View Image
                                 </a>
                             </div>

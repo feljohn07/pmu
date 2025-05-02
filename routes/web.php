@@ -19,6 +19,26 @@ use App\Livewire\Fabrications;
 use App\Livewire\PMUStaff;
 
 
+Route::get('/create-symlink', function () {
+    $target = '../storage/app/public';
+    $link = 'public/storage';
+
+    if (file_exists($link)) {
+        return 'The "public/storage" directory already exists.';
+    }
+
+    $output = null;
+    $return_var = null;
+    exec("ln -s $target $link", $output, $return_var);
+
+    if ($return_var !== 0) {
+        return 'Failed to create symbolic link.';
+    }
+
+    return 'Symbolic link created successfully.';
+});
+
+
 Route::view('/', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
