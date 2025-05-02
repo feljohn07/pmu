@@ -21,7 +21,7 @@ use App\Livewire\PMUStaff;
 
 Route::get('/create-symlink', function () {
     $target = '../storage/app/public';
-    $link = 'public/storage';
+    $link = 'public';
 
     if (file_exists($link)) {
         return 'The "public/storage" directory already exists.';
