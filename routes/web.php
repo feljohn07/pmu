@@ -72,6 +72,7 @@ Route::view('/fabrications', 'fabrications')->middleware(['auth', 'verified'])->
 // This route will handle URLs like /gantt/123
 Route::get('/gantt/{projectId}', [GanttController::class, 'showGantt'])
     ->where('projectId', '[0-9]+') // Optional: Ensure projectId is numeric
+    ->middleware(['auth', 'verified'])
     ->name('gantt.show'); // Name remains the same, but now expects a parameter
 
 
@@ -87,6 +88,7 @@ Route::get('/project-form/{id}', ProjectReportTest::class)->middleware(['auth', 
 
 
 Route::get('/accomplishment-reports/{report}/documentation', [AccomplishmentReportController::class, 'showDocumentation'])
+    ->middleware(['auth', 'verified'])
     ->name('accomplishment.documentation.show');
 
 // Uses route model binding for DocumentationUpload
