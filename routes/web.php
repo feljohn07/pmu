@@ -23,6 +23,8 @@ Route::get('/create-symlink', function () {
     $target = '../storage/app/public';
     $link = 'public';
 
+    // ln -s ../storage/app/public public/storage
+
     if (file_exists($link)) {
         return 'The "public/storage" directory already exists.';
     }
