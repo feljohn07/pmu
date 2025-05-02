@@ -21,7 +21,7 @@ use App\Livewire\PMUStaff;
 
 Route::get('/create-symlink', function () {
     $target = '../storage/app/public';
-    $link = 'public';
+    $link = 'public/storage';
 
     // ln -s ../storage/app/public public/storage
 
